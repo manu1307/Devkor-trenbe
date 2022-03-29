@@ -275,10 +275,7 @@ class BottomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          bottomicon(
-            text: '카테고리',
-            iconclass: Icons.home,
-          ),
+          bottomicon(text: '카테고리', iconclass: Icons.category),
           bottomicon(
             text: '이벤트',
             iconclass: Icons.event,
