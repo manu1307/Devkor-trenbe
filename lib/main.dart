@@ -60,6 +60,15 @@ class MyApp extends StatelessWidget {
           color: const Color(0xFFffffff),
         )),
         home: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            child: Icon(
+              Icons.arrow_drop_up,
+              color: Colors.black,
+              size: 30,
+            ),
+            backgroundColor: Colors.white,
+          ),
           appBar: AppBar(
             title: Row(
               children: [
