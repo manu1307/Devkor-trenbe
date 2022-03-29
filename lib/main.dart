@@ -1,172 +1,266 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+class OnHover extends StatefulWidget {
+  final Widget Function(bool isHovered) builder;
+  const OnHover({Key? key, required this.builder}) : super(key: key);
+  @override
+  _OnHoverState createState() => _OnHoverState();
+}
+
+class _OnHoverState extends State<OnHover> {
+  bool isHovered = false;
+  @override
+  Widget build(BuildContext context) {
+    final hovered = Matrix4.identity()..translate(0);
+    final transform = isHovered ? hovered : Matrix4.identity();
+    return MouseRegion(
+      onEnter: (_) => onEntered(true),
+      onExit: (_) => onEntered(false),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        transform: transform,
+        child: widget.builder(isHovered),
+      ),
+    );
+  }
+
+  void onEntered(bool isHovered) {
+    setState(() {
+      this.isHovered = isHovered;
+    });
+  }
+}
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  var index = [0, 1, 2, 3, 4];
+  var line1 = ["여성", "남성", "키즈", "리세일", "아울렛"];
+  var line1img = ['women.png', 'men.png', 'kids.png', 'bag1.png', 'bag2.png'];
+  var line2 = ["하이엔드", "컨템럭셔리", "스니커즈", "홈리빙", "리퍼브"];
+  var line2img = [
+    'highend.png',
+    'fox.png',
+    'snickers.png',
+    'light.png',
+    'sale.png'
+  ];
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             appBarTheme: AppBarTheme(
           color: const Color(0xFFffffff),
         )),
         home: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            child: Text(
-              '+',
-              style: TextStyle(fontSize: 40),
-            ),
-            onPressed: () {},
-            backgroundColor: Color(0xffe78111),
-          ),
           appBar: AppBar(
-            title: Text('잠실동', style: TextStyle(color: Colors.black)),
+            title: Row(
+              children: [
+                Text('tren',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w900)),
+                Text(':',
+                    style: TextStyle(
+                        color: Colors.purple, fontWeight: FontWeight.w900)),
+                Text('be',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w900)),
+              ],
+            ),
             actions: [
               IconButton(
                   onPressed: () {},
                   icon: Icon(
-                    Icons.search_sharp,
+                    Icons.favorite_border,
                     color: Colors.black,
                   )),
               IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.notes, color: Colors.black)),
-              Icon(Icons.notifications, color: Colors.black),
+                  icon: Icon(
+                    Icons.shopping_bag_outlined,
+                    color: Colors.black,
+                  ))
             ],
           ),
-          body: SizedBox(
-            child: ListView(
+          body: ListView(children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+              child: TextField(
+                decoration: InputDecoration(
+                    disabledBorder: InputBorder.none,
+                    filled: true,
+                    fillColor: Color.fromARGB(255, 247, 247, 247),
+                    hintText: "블랙프라이데이 초특가 행사",
+                    prefixIcon: Icon(Icons.search)),
+              ),
+            ),
+            navbar(),
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 200,
+                autoPlay: true,
+              ),
+              items: [1, 2, 3].map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        child: (Image(
+                          image: AssetImage('$i.png'),
+                        )));
+                  },
+                );
+              }).toList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                content(
-                  imageSource: '1.jfif',
-                  textTitle: '꼼데가르송 가디건',
-                  location: '강남구 대치4동',
-                  price: '100,000',
-                  favorite: '4',
-                  chat: '2',
-                ),
-                content(
-                  imageSource: 'zflip.jfif',
-                  textTitle: '갤럭시 제트플립 미사용 s급',
-                  location: '잠실 3동 1분전',
-                  price: '630,000',
-                  favorite: '2',
-                  chat: '2',
-                ),
-                content(
-                  imageSource: 'tommy.jfif',
-                  textTitle: '타미힐피거 남성자켓 급처',
-                  location: '강남구 일원1동 , 끌올 39초 전',
-                  price: '18,000',
-                  favorite: '1',
-                  chat: '0',
-                ),
-                content(
-                  imageSource: 'airforce.jfif',
-                  textTitle: '에어포스 나이키 정품 255사이즈',
-                  location: '서울특별시 강남구 14시간 전',
-                  price: '100,000',
-                  favorite: '3',
-                  chat: '0',
-                ),
-                content(
-                  imageSource: 'blackyak.jfif',
-                  textTitle: '블랙야크 롱패딩 급처 (105사이즈)',
-                  location: '강남구 일원1동 , 끌올 22초 전',
-                  price: '29,000',
-                  favorite: '1',
-                  chat: '7',
-                ),
+                for (int i in index)
+                  Container(
+                      child: Column(
+                    children: [
+                      iconimage(name: line1img[i]),
+                      TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            line1[i],
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black),
+                          )),
+                    ],
+                  ))
               ],
             ),
-          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                for (int i in index)
+                  Container(
+                      child: Column(
+                    children: [
+                      iconimage(name: line2img[i]),
+                      TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            line2[i],
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black),
+                          )),
+                    ],
+                  ))
+              ],
+            )
+          ]),
           bottomNavigationBar: BottomAppBar(),
         ));
   }
 }
 
-class content extends StatelessWidget {
-  final String imageSource;
-  final String textTitle;
-  final String location;
-  final String price;
-  final String favorite;
-  final String chat;
+class iconimage extends StatelessWidget {
+  const iconimage({Key? key, required this.name}) : super(key: key);
+  final String name;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: Image(
+          image: AssetImage(name),
+          width: 30,
+          height: 30,
+        ));
+  }
+}
 
-  const content({
-    Key? key,
-    required this.imageSource,
-    required this.textTitle,
-    required this.location,
-    required this.price,
-    required this.favorite,
-    required this.chat,
-  }) : super(key: key);
+class navbar extends StatelessWidget {
+  const navbar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(3),
-      decoration: BoxDecoration(
-          border: Border.symmetric(
-              horizontal: BorderSide(color: Colors.grey, width: 0.4))),
-      child: Row(
-        children: [
-          Image.asset(
-            imageSource,
-            width: 160,
-            height: 139,
-          ),
-          Flexible(
-            child: Container(
-              height: 140,
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(textTitle,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      )),
-                  Text(location,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w100,
-                          color: Colors.grey,
-                          fontSize: 8.5)),
-                  Text(price + '원',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.favorite,
-                                size: 15, color: Colors.grey)),
-                        Text(favorite),
-                        IconButton(
-                            onPressed: () {},
-                            icon:
-                                Icon(Icons.chat, size: 15, color: Colors.grey)),
-                        Text(chat)
-                      ],
-                    ),
-                  )
-                ],
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 12),
+        child: Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: () {},
+                child: Text('홈'),
+                style: TextButton.styleFrom(primary: Colors.black),
               ),
-            ),
-            flex: 8,
+              TextButton(
+                onPressed: () {},
+                child: Text('기획전'),
+                style: TextButton.styleFrom(primary: Colors.black),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text('랭킹'),
+                style: TextButton.styleFrom(primary: Colors.black),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text('브랜드'),
+                style: TextButton.styleFrom(primary: Colors.black),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text('IT:EM'),
+                style: TextButton.styleFrom(primary: Colors.black),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text('매거진'),
+                style: TextButton.styleFrom(primary: Colors.black),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
+  }
+}
+
+class bottomicon extends StatelessWidget {
+  const bottomicon({Key? key, this.text, this.iconclass}) : super(key: key);
+  final text;
+  final iconclass;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 100,
+        height: 50,
+        padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+        child: TextButton(
+            style: TextButton.styleFrom(primary: Colors.white),
+            onPressed: () {},
+            child: Column(
+              children: [
+                OnHover(builder: ((isHovered) {
+                  var color = isHovered ? Colors.purple : Colors.grey;
+                  return Icon(
+                    iconclass,
+                    color: color,
+                  );
+                })),
+                Text(
+                  text,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 10,
+                      color: Colors.grey),
+                ),
+              ],
+            )));
   }
 }
 
@@ -181,111 +275,26 @@ class BottomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-              width: 70,
-              height: 50,
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-              child: TextButton(
-                  onPressed: () {},
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        "홈",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 9,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ))),
-          Container(
-              width: 70,
-              height: 50,
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-              child: TextButton(
-                  onPressed: () {},
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.business,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        "동네생활",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 9,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ))),
-          Container(
-              width: 70,
-              height: 50,
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-              child: TextButton(
-                  onPressed: () {},
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.location_on_rounded,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        "내 근처",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 9,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ))),
-          Container(
-              width: 70,
-              height: 50,
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-              child: TextButton(
-                  onPressed: () {},
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.chat,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        "채팅",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 9,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ))),
-          Container(
-              width: 70,
-              height: 50,
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-              child: TextButton(
-                  onPressed: () {},
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        "나의 당근",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 9,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ))),
+          bottomicon(
+            text: '카테고리',
+            iconclass: Icons.home,
+          ),
+          bottomicon(
+            text: '이벤트',
+            iconclass: Icons.event,
+          ),
+          bottomicon(
+            text: '홈',
+            iconclass: Icons.home_filled,
+          ),
+          bottomicon(
+            text: '뉴 시즌',
+            iconclass: Icons.new_releases,
+          ),
+          bottomicon(
+            text: '마이',
+            iconclass: Icons.person,
+          ),
         ],
       ),
     );
